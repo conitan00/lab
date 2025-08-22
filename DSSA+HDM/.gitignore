@@ -1,0 +1,16 @@
+# 実行ファイル
+main
+
+# データファイル
+data/**/*.csv
+input/*
+
+# システムファイル
+.DS_Store
+*.tmp
+*.log
+
+# コンパイル生成物
+*.o
+*.exe
+*.out

@@ -1,0 +1,16 @@
+# DSSA+HDMフォルダ以外をすべて無視
+/*
+!/DSSA+HDM/
+!/.gitignore
+
+# DSSA+HDM内の不要ファイル
+DSSA+HDM/data/**/*.csv
+DSSA+HDM/.vs/
+DSSA+HDM/*.ipch
+DSSA+HDM/main
+DSSA+HDM/input/*
+
+# システムファイル
+.DS_Store
+*.tmp
+*.log
