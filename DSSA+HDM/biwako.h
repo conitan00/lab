@@ -1,4 +1,6 @@
 #pragma once
+#define _USE_MATH_DEFINES
+#include <cmath>
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -263,12 +265,12 @@ inline void biwako::cal_actual(int time_step, Agent& agent, int crs, int spd) {
 	double* x_flow_ptr = &x_flow;
 	double* y_flow_ptr = &y_flow;
 	cal_FS(min, cur_x, cur_y, x_flow_ptr, y_flow_ptr);
-	double new_x = x_flow + intention_speed * std::cos(intention_heading);
-	double new_y = y_flow + intention_speed * std::sin(intention_heading);
+	double new_x = x_flow + intention_speed * cos(intention_heading);
+	double new_y = y_flow + intention_speed * sin(intention_heading);
 
-	double new_radian = std::atan2(new_y, new_x);
+	double new_radian = atan2(new_y, new_x);
 	agent.actual_heading[crs][spd] = new_radian;
-	agent.actual_speed[crs][spd] = std::sqrt(new_x * new_x + new_y * new_y);
+	agent.actual_speed[crs][spd] = sqrt(new_x * new_x + new_y * new_y);
 }
 
 //-----tcpaの計算における実際の経路の計算-------------------------------------------------
@@ -286,12 +288,12 @@ inline void biwako::cal_actual_tcpa(int time_step, Agent& agent, int crs, int sp
 	double* x_flow_ptr = &x_flow;
 	double* y_flow_ptr = &y_flow;
 	cal_FS(min, cur_x, cur_y, x_flow_ptr, y_flow_ptr);
-	double new_x = (x_flow + intention_speed * std::cos(intention_heading)) * 5;
-	double new_y = (y_flow + intention_speed * std::sin(intention_heading)) * 5;
+	double new_x = (x_flow + intention_speed * cos(intention_heading)) * 5;
+	double new_y = (y_flow + intention_speed * sin(intention_heading)) * 5;
 
-	double new_radian = std::atan2(new_y, new_x);
+	double new_radian = atan2(new_y, new_x);
 	agent.actual_heading_tcpa[crs][spd] = new_radian;
-	agent.actual_speed_tcpa[crs][spd] = std::sqrt(new_x * new_x + new_y * new_y);
+	agent.actual_speed_tcpa[crs][spd] = sqrt(new_x * new_x + new_y * new_y);
 }
 
 inline double biwako::cal_goal_intention(int time_step, double cur_x, double cur_y, double goal_heading, double intention_speed) {
@@ -309,11 +311,11 @@ inline double biwako::cal_goal_intention(int time_step, double cur_x, double cur
 	int iter = 0;
 	while (true) {
 		iter++;
-		double goal_x = intention_speed * std::cos(intention_heading_tmp) + x_flow;
-		double goal_y = intention_speed * std::sin(intention_heading_tmp) + y_flow;
-		double goal_heading_cal = std::atan2(goal_y, goal_x);
+		double goal_x = intention_speed * cos(intention_heading_tmp) + x_flow;
+		double goal_y = intention_speed * sin(intention_heading_tmp) + y_flow;
+		double goal_heading_cal = atan2(goal_y, goal_x);
 		double diff = goal_heading - goal_heading_cal;
-		if (std::abs(diff) <= change_rate) {
+		if (abs(diff) <= change_rate) {
 			double intention_heading = intention_heading_tmp;
 			return intention_heading;
 		}
@@ -392,14 +394,14 @@ inline void Agent::set_goal_pos(double x, double y){
 inline double Agent::get_goal_heading(){
     double x = goal_pos[0] - current_pos[0]; 
     double y = goal_pos[1] - current_pos[1]; 
-    return std::atan2(y, x);
+    return atan2(y, x);
 }
 
 //-----目標座標までの直線距離を返す-------------
 inline double Agent::get_distance_to_goal(){
     double x = goal_pos[0] - current_pos[0]; 
     double y = goal_pos[1] - current_pos[1]; 
-    return std::sqrt(x * x + y * y);
+    return sqrt(x * x + y * y);
 }
 
 //-----検知範囲内の船舶か否かの問合せに回答-----
@@ -419,7 +421,7 @@ inline void Agent::updateNeighbors(int myID, vector<Agent>& agent){
         {
             double x = current_pos[0] - agent[i].current_pos[0];
             double y = current_pos[1] - agent[i].current_pos[1];
-            double distance = std::sqrt(x * x + y * y);
+            double distance = sqrt(x * x + y * y);
 
             if (distance <= detection_range || distance <= agent[i].detection_range)
             {
@@ -441,6 +443,6 @@ inline void Agent::updateNeighbors(int myID, vector<Agent>& agent){
 inline double Agent::get_distance_to_other(Agent* other){
     double x = current_pos[0] - other->current_pos[0];
     double y = current_pos[1] - other->current_pos[1];
-    return std::sqrt(x * x + y * y);
+    return sqrt(x * x + y * y);
 }
 
