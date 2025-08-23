@@ -138,13 +138,13 @@ inline void MoveAgents::run_DSSQ() {
                     double radian = agent[i].actual_heading[agent[i].intention_heading_id][agent[i].intention_speed_id];
                     double speed = agent[i].actual_speed[agent[i].intention_heading_id][agent[i].intention_speed_id];
                     double curX = agent[i].current_pos[0];
-                    double newX = curX + cos(radian) * speed;
+                    double newX = curX + std::cos(radian) * speed;
                     double curY = agent[i].current_pos[1];
-                    double newY = curY + sin(radian) * speed;
+                    double newY = curY + std::sin(radian) * speed;
                     agent[i].set_current_pos(newX, newY);
                     agent[i].trajectory.push_back(newX);
                     agent[i].trajectory.push_back(newY);
-                    agent[i].path_length += sqrt((newX - curX) * (newX - curX) + (newY - curY) * (newY - curY));
+                    agent[i].path_length += std::sqrt((newX - curX) * (newX - curX) + (newY - curY) * (newY - curY));
                     agent[i].time_step++;
                     allAgentsAtGoal = false;
                 }
@@ -168,7 +168,7 @@ inline void MoveAgents::run_DSSQ() {
                 for (const auto& t : agent_times) {
                     var += (t - mean_time_step) * (t - mean_time_step);
                 }
-                double SD = sqrt(var / num_agents);
+                double SD = std::sqrt(var / num_agents);
                 ave_timestep.push_back(mean_time_step);
                 SD_timestep.push_back(SD);
 
@@ -332,7 +332,7 @@ inline MoveAgents::MoveAgents(string file_name) {
     }
 
     for (int i = 0; i < 10; i++) {
-        powt[i] = pow(0.5, i);
+        powt[i] = std::pow(0.5, i);
     }
 
     for (int i = 0; i < agent.size(); ++i) {
@@ -373,7 +373,7 @@ inline void MoveAgents::_record(int episode, vector<double> agent_times) {
 
 //2つの角度の差を求める
 inline double MoveAgents::differenceBetweenAngle(double angle1, double angle2) {
-    double dif = fabs(angle1 - angle2);
+    double dif = std::fabs(angle1 - angle2);
     if (dif > M_PI) {
         dif = 2 * M_PI - dif;
     }
@@ -534,7 +534,7 @@ inline void MoveAgents::updateCostTable(int i) {
                 }
 
                 agent[i].cost[crs][spd] = n * n * 0.5 * differenceBetweenAngle(heading, agent[i].get_goal_heading()) / M_PI + 
-                                         n * n * 0.5 * fabs(agent[i].reference_speed * dict.unit_change - speed) / (agent[i].max_speed * dict.unit_change);
+                                         n * n * 0.5 * std::fabs(agent[i].reference_speed * dict.unit_change - speed) / (agent[i].max_speed * dict.unit_change);
 
                 for (int j = 0; j < num_agents; j++) {
                     if (agent[i].neighbors[j]) {
@@ -572,18 +572,18 @@ inline void MoveAgents::avoid(int i, int crs, int spd) {
         radian += dict.space_angle_deg * angle * M_PI / 180;
 
         for (int step = 1; step <= (agent[i].get_distance_to_goal() <= 4500 ? 1 : dict.num_steps); step++) {
-            double next_pos[2] = { agent[i].current_pos[0] + cos(radian) * speed * step, 
-                                   agent[i].current_pos[1] + sin(radian) * speed * step };
+            double next_pos[2] = { agent[i].current_pos[0] + std::cos(radian) * speed * step, 
+                                   agent[i].current_pos[1] + std::sin(radian) * speed * step };
             int x_index = (int)(next_pos[0] / 500) + 1;
             int y_index = (int)(next_pos[1] / 500) + 1;
 
             if (500 <= next_pos[0] && next_pos[0] <= 35000 && 500 <= next_pos[1] && next_pos[1] <= 65000) {
                 if (biwako::icover_data[x_index][y_index] != 0) {
-                    agent[i].cost[crs][spd] += dict.cost * powt[abs(angle)] * powt[step];
+                    agent[i].cost[crs][spd] += dict.cost * powt[std::abs(angle)] * powt[step];
                 }
             }
             else {
-                agent[i].cost[crs][spd] += dict.cost * powt[abs(angle)] * powt[step];
+                agent[i].cost[crs][spd] += dict.cost * powt[std::abs(angle)] * powt[step];
             }
         }
     }
@@ -596,13 +596,13 @@ inline void MoveAgents::compTCPAandDCPA(int i, int crs, int spd, int j, double* 
 
     double radian_i = agent[i].actual_heading_tcpa[crs][spd];
     double speed_i = agent[i].actual_speed_tcpa[crs][spd];
-    double newPos_i[2] = { agent[i].current_pos[0] + cos(radian_i) * speed_i, 
-                           agent[i].current_pos[1] + sin(radian_i) * speed_i };
+    double newPos_i[2] = { agent[i].current_pos[0] + std::cos(radian_i) * speed_i, 
+                           agent[i].current_pos[1] + std::sin(radian_i) * speed_i };
 
     double radian_j = agent[j].actual_heading_tcpa[agent[j].intention_heading_id][agent[j].intention_speed_id];
     double speed_j = agent[j].actual_speed_tcpa[agent[j].intention_heading_id][agent[j].intention_speed_id];
-    double newPos_j[2] = { agent[j].current_pos[0] + cos(radian_j) * speed_j, 
-                           agent[j].current_pos[1] + sin(radian_j) * speed_j };
+    double newPos_j[2] = { agent[j].current_pos[0] + std::cos(radian_j) * speed_j, 
+                           agent[j].current_pos[1] + std::sin(radian_j) * speed_j };
 
     double a = curPos_i[0] - curPos_j[0];
     double b = newPos_i[0] - curPos_i[0] - newPos_j[0] + curPos_j[0];
@@ -638,7 +638,7 @@ inline void MoveAgents::compTCPAandDCPA(int i, int crs, int spd, int j, double* 
     }
 
     if (squareDistanceAtCPA < 0) {
-        if (fabs(squareDistanceAtCPA) < 0.00001) {
+        if (std::fabs(squareDistanceAtCPA) < 0.00001) {
             *dcpa_ptr = 0.0;
         }
         else {
@@ -647,7 +647,7 @@ inline void MoveAgents::compTCPAandDCPA(int i, int crs, int spd, int j, double* 
         }
     }
     else {
-        *dcpa_ptr = sqrt(squareDistanceAtCPA);
+        *dcpa_ptr = std::sqrt(squareDistanceAtCPA);
     }
 }
 
