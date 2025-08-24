@@ -10,7 +10,7 @@ constexpr int AGENT_NUM = 10;
 #include <memory>
 #include <array>
 #include <locale>
-#include "dict.h"
+#include "config.h"
 #include "agent.h"
 #include "biwako.h"
 #include "mover.h"

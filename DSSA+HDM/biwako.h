@@ -6,7 +6,7 @@
 #include <string>
 #include <sstream>
 #include <iomanip>
-#include "dict.h"
+#include "config.h"
 
 // Forward declaration
 class Agent;

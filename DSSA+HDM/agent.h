@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include "dict.h"
+#include "config.h"
 //#include <iostream>
 using namespace std;
 

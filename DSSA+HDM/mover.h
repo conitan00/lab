@@ -87,7 +87,7 @@ public:
 #include <array>
 #include <set>
 #include <chrono>
-#include "dict.h"
+#include "config.h"
 #include "biwako.h"
 #include <iomanip>
 #include <filesystem>

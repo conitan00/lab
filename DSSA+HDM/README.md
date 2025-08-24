@@ -1,20 +1,23 @@
 # DSSA+HDM
 
-船舶衝突回避シミュレーション
-
-## 使用方法
+## 実行方法
 
 ```bash
+# コンパイル
 g++ -std=c++17 -O2 -o main main.cpp
-./main
+
+# 実行
+main.exe
 ```
 
 ## 設定
 
-- エージェント数: `main.cpp` の `AGENT_NUM`
-- エピソード数: `main.cpp` の `EPISODE_NUM`
+`config.h`で設定を変更可能
 
-## 出力
+## 衝突地点の可視化
 
-- 実行結果: コンソール出力
-- データファイル: `data/` ディレクトリ
+```bash
+python visualize_collision.py
+```
+
+衝突地点を地図上にプロットし、`collision_map.png`として保存
