@@ -1,23 +1,37 @@
 # DSSA+HDM
 
-## 実行方法
+おけー
+<br>
+
+## 最新の状態に更新
 
 ```bash
-# コンパイル
-g++ -std=c++17 -O2 -o main main.cpp
+git pull
+```
 
-# 実行
+<br>
+
+## 実行方法
+
+コンパイル
+```bash
+g++ -std=c++17 -O2 -o main main.cpp
+```
+実行
+```bash
 main.exe
 ```
 
+<br>
+
 ## 設定
 
-`config.h`で設定を変更可能
+config.hで設定を変更可能
+
+<br>
 
 ## 衝突地点の可視化
 
 ```bash
 python visualize_collision.py
 ```
-
-衝突地点を地図上にプロットし、`collision_map.png`として保存
