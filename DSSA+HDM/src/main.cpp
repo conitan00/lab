@@ -21,10 +21,18 @@ using namespace std;
 int main() {
 
     try {
+#ifdef _WIN32
+        std::locale::global(std::locale("Japanese_Japan.932"));
+#else
         std::locale::global(std::locale("ja_JP.UTF-8"));
-        std::wcout.imbue(std::locale("ja_JP.UTF-8"));
+#endif
+        std::wcout.imbue(std::locale());
     } catch(const std::exception& e) {
-        std::locale::global(std::locale(""));
+        try {
+            std::locale::global(std::locale("C"));
+        } catch(...) {
+            // フォールバック：何もしない
+        }
     }
 
     cout << "\n<<DSSQ start>>\n\n";
