@@ -5,7 +5,7 @@ using namespace std;
 struct Dict {
 
 	static const int num_agents = 30;
-	static const int num_episodes = 10000;
+	static const int num_episodes = 100;
 	string input_folder_name = "2009-04-04_PR10";
 	string dates = "20090404";
 	string WS = "1";

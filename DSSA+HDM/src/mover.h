@@ -5,7 +5,6 @@
 #include <cmath>
 #include <numeric>
 #include <memory>
-#include "agent.h"
 
 using namespace std;
 
@@ -33,10 +32,10 @@ public:
     vector<double> ave_timestep; // 各エピソードの平均タイムステップを記録
     vector<double> SD_timestep; // 各エピソードの標準偏差(タイムステップ)を記録
     int cnt_success; // 成功エピソード数を記録
-    string output_dir; // 出力先ディレクトリ（data/タイムスタンプ/）
+    string output_dir; // 出力先ディレクトリ（output/タイムスタンプ/）
     
     // ========== アルゴリズム切り替え設定 ==========
-    static constexpr bool USE_HDM_ALGORITHM = false; // true: DSSA+HDM, false: 基本DSSA+
+    static constexpr bool USE_HDM_ALGORITHM = true; // true: DSSA+HDM, false: 基本DSSA+
     
     // HDMアルゴリズム用パラメータ（調整可能）
     static constexpr int NEIGHBOR_THRESHOLD = 5;           // 周辺船舶数の閾値
@@ -298,7 +297,7 @@ inline MoveAgents::MoveAgents(string file_name) {
 #endif
     std::ostringstream oss;
     oss << std::put_time(&tm, "%Y%m%d_%H%M%S");
-    output_dir = "data/" + oss.str();
+    output_dir = "output/" + oss.str();
 #ifdef _WIN32
     std::filesystem::create_directories(output_dir);
 #else
@@ -679,4 +678,27 @@ inline void MoveAgents::compNextIntentionByDSSA(int i) {
         agent[i].intention_heading_id = argmin_crs;
         agent[i].intention_speed_id = argmin_spd;
     }
+}
+
+// Agent::init implementation that uses biwako
+inline void Agent::init(int episode) {
+    trajectory.clear();
+    trajectory.reserve(200);
+    start_port_ID = biwako::pattern[episode][ID].first - 1;
+    goal_port_ID = biwako::pattern[episode][ID].second - 1;
+    current_pos[0] = (biwako::port[start_port_ID].lon - biwako::lon_west) * dict.m_deg_change[0]; //初期位置の設定(x)
+    current_pos[1] = biwako::vertical_size_m - (biwako::port[start_port_ID].lat - biwako::lat_south) * dict.m_deg_change[1]; //初期位置の設定(y)
+    init_pos[0] = (biwako::port[start_port_ID].lon - biwako::lon_west) * dict.m_deg_change[0]; //初期位置の設定(x)
+    init_pos[1] = biwako::vertical_size_m - (biwako::port[start_port_ID].lat - biwako::lat_south) * dict.m_deg_change[1]; //初期位置の設定(y)
+    goal_pos[0] = (biwako::port[goal_port_ID].lon - biwako::lon_west) * dict.m_deg_change[0]; //目標位置の設定(x)
+    goal_pos[1] = biwako::vertical_size_m - (biwako::port[goal_port_ID].lat - biwako::lat_south) * dict.m_deg_change[1]; //目標位置の設定(y)
+
+    current_heading_id = 9;
+    current_speed_id = 4;
+    intention_heading_id = 9;
+    intention_speed_id = 4;
+    notAtGoal = true;
+    time_step = 0;
+    current_heading = get_goal_heading(); //現在角度を目標角度に初期化
+    trajectory.clear(); //船舶の軌跡の初期化
 }

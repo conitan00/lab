@@ -1,6 +1,8 @@
 #pragma once
 #include <vector>
-#include "config.h"
+#include <cmath>
+#define _USE_MATH_DEFINES
+#include <math.h>
 //#include <iostream>
 using namespace std;
 
@@ -102,5 +104,92 @@ class Agent{
 
     // 船舶間の距離を返す
     double get_distance_to_other(Agent* other);
-    
+
 };
+
+// Agent implementation
+inline Agent::Agent() {
+    time_step = 0;
+
+    // ドメイン初期化
+    possible_angle_deg = { -45, -40, -35, -30, -25, -20, -15, -10, -5, 0, 5, 10, 15, 20, 25, 30, 35, 40, 45 };
+    for (int i = 0; i < Agent::num_angles; i++) {
+        possible_angle_rad.push_back(possible_angle_deg[i] * (M_PI / 180));
+    }
+}
+
+//-----初期座標を指定した値に設定------------
+inline void Agent::set_init_pos(double x, double y){
+    init_pos[0] = x;
+    init_pos[1] = y;
+    current_pos[0] = x;
+    current_pos[1] = y;
+}
+
+//-----現在座標を指定した値に変更---------------
+inline void Agent::set_current_pos(double x, double y){
+    current_pos[0] = x;
+    current_pos[1] = y;
+}
+
+//-----目標座標を指定した値に設定------------
+inline void Agent::set_goal_pos(double x, double y){
+    goal_pos[0] = x;
+    goal_pos[1] = y;
+}
+
+//-----目標方向（絶対角度）を返す---------------
+inline double Agent::get_goal_heading(){
+    double x = goal_pos[0] - current_pos[0];
+    double y = goal_pos[1] - current_pos[1];
+    return atan2(y, x);
+}
+
+//-----目標座標までの直線距離を返す-------------
+inline double Agent::get_distance_to_goal(){
+    double x = goal_pos[0] - current_pos[0];
+    double y = goal_pos[1] - current_pos[1];
+    return sqrt(x * x + y * y);
+}
+
+//-----検知範囲内の船舶か否かの問合せに回答-----
+inline bool Agent::queryNeighbors(int from_agent_ID){
+    return neighbors[from_agent_ID];
+}
+
+//-----検知範囲内の移動中の船舶(neighbors)を更新----------------------------------------
+inline void Agent::updateNeighbors(int myID, vector<Agent>& agent){
+    for (int i = 0; i < num_agents ; i++)
+    {
+        if (i < myID)
+        {
+            neighbors[i] = agent[i].queryNeighbors(myID);
+        }
+        else if (i > myID)
+        {
+            double x = current_pos[0] - agent[i].current_pos[0];
+            double y = current_pos[1] - agent[i].current_pos[1];
+            double distance = sqrt(x * x + y * y);
+
+            if (distance <= detection_range || distance <= agent[i].detection_range)
+            {
+                neighbors[i] = true;
+            }
+            else
+            {
+                neighbors[i] = false;
+            }
+        }
+        else
+        {
+            neighbors[i] = false;
+        }
+     }
+}
+
+//-----船舶間の距離を返す---------------------------------
+inline double Agent::get_distance_to_other(Agent* other){
+    double x = current_pos[0] - other->current_pos[0];
+    double y = current_pos[1] - other->current_pos[1];
+    return sqrt(x * x + y * y);
+}

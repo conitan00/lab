@@ -1,6 +1,0 @@
-num_agents: 30
-num_episodes: 10,000
-wind_scale: 1
-rain_scale: 10
-ship_size: 50
-algorithm: DSSA+
