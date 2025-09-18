@@ -1,6 +1,6 @@
 # DSSA+HDM
 
-## 実行方法
+<!-- ## 実行方法
 
 ```bash
 make compile    # コンパイル
@@ -10,6 +10,18 @@ make run        # 実行
 ```
 ```bash
 make visualize  # 衝突地点の可視化
+``` -->
+
+## 実行方法
+
+```bash
+g++ -std=c++17 -O2 -o main src/main.cpp #コンパイル
+```
+```bash
+./main.exe        # 実行
+```
+```bash
+python src/visualize_collision.py  # 衝突地点の可視化
 ```
 
 ## フォルダ構成
