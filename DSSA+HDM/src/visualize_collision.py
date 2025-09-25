@@ -4,9 +4,8 @@ import numpy as np
 import os
 import glob
 
-plt.rcParams['font.family'] = ['Hiragino Sans', 'Arial']
+# plt.rcParams['font.family'] = ['Hiragino Sans', 'Arial']
 
-# outputフォルダ内の全てのタイムスタンプフォルダを取得
 output_dirs = glob.glob("../output/*/")
 
 coverage_array = pd.read_csv("../input/icover.csv").values
@@ -14,16 +13,15 @@ coverage_array = pd.read_csv("../input/icover.csv").values
 for output_dir in output_dirs:
     collision_file = os.path.join(output_dir, "collision.csv")
 
-    # collision.csvファイルが存在する場合のみ処理
     if os.path.exists(collision_file):
         collision_data = pd.read_csv(collision_file)
 
         plt.figure(figsize=(12, 10))
 
         colored_map = np.zeros((*coverage_array.shape, 3))
-        colored_map[coverage_array == -1] = [1.0, 1.0, 1.0]  # 白
-        colored_map[coverage_array == 0] = [0.2, 0.6, 1.0]   # 青色
-        colored_map[coverage_array == 7] = [0.3, 0.7, 0.3]   # 緑色
+        colored_map[coverage_array == -1] = [1.0, 1.0, 1.0]
+        colored_map[coverage_array == 0] = [0.2, 0.6, 1.0]
+        colored_map[coverage_array == 7] = [0.3, 0.7, 0.3]
         plt.imshow(colored_map, origin='upper', alpha=0.7)
 
         x = collision_data['x'].values
@@ -44,10 +42,9 @@ for output_dir in output_dirs:
         plt.gca().set_aspect('equal')
         plt.tight_layout()
 
-        # 各フォルダ内にcollision_visualization.pngを保存
         output_file = os.path.join(output_dir, "collision_visualization.png")
         plt.savefig(output_file, dpi=300)
-        plt.close()  # メモリ節約のためにfigureを閉じる
+        plt.close()
 
         print(f"Generated: {output_file}")
 
